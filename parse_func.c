@@ -36,6 +36,7 @@ void Init_parse_util()
 	nVCCS = 0;
 }
 
+
 void ParseRes(char *name, char *node1, char *node2, double value)
 {
 	int numnodes = 2;

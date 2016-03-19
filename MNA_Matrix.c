@@ -25,6 +25,7 @@
 
 int MatrixSize = 0;	// size of the MNA matrix (i.e., the max dimension)
 double **MNAMatrix = NULL;
+double **MNAAuxMatrix = NULL;
 double *RHS = NULL;
 
 /**
@@ -48,7 +49,7 @@ void Index_All_Nodes()
         itr = itr->next;
     }
 
-    MatrixSize = IndexTableSize;
+    MatrixSize = IndexTableSize - 1; // number of nodes = matrix size
 }
 
 int Get_Matrix_Size()
@@ -91,8 +92,11 @@ void Init_MNA_System()
 	}
 
 	MNAMatrix = (double**) malloc( (MatrixSize+1) * sizeof(double*) );
+    MNAAuxMatrix = (double**) malloc( (MatrixSize+1) * sizeof(double*) );
+
 	for (i = 0; i <= MatrixSize; i++) {
 		MNAMatrix[i] = (double*) malloc( (MatrixSize+1) * sizeof(double) );
+        MNAAuxMatrix[i] = (double*) malloc( (MatrixSize+1) * sizeof(double) );
 	}
 
 	RHS = (double*) malloc( (MatrixSize+1) * sizeof(double) );
@@ -101,6 +105,7 @@ void Init_MNA_System()
 	for (i = 0; i <= MatrixSize; i++) {
 		for (j = 0; j <= MatrixSize; j++) {
 			MNAMatrix[i][j] = 0.0;
+            MNAAuxMatrix[i][j] = 0.0;
 		}
 		RHS[i] = 0.0;
 	}
@@ -117,6 +122,49 @@ void Init_MNA_System()
 */
 void Create_MNA_Matrix()
 {
+    Device_Entry *itr = *DeviceTable;
+    while(itr != NULL)
+    {
+        switch(itr->name[0])
+        {
+            case 'R':   //resistor
+                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[0]->name)] += 1.0/(itr->value);
+                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[1]->name)] += 1.0/(itr->value);
+                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[1]->name)] -= 1.0/(itr->value);
+                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[0]->name)] -= 1.0/(itr->value);
+                break;
+            
+            case 'G':   //vccs
+                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[2]->name)] += (itr->value);
+                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[3]->name)] -= (itr->value);
+                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[2]->name)] -= (itr->value);
+                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[3]->name)] += (itr->value);
+                break;
+            
+            case 'I':   //isrc
+                RHS[atoi(itr->nodelist[0]->name)] -= itr->value;
+                RHS[atoi(itr->nodelist[1]->name)] += itr->value;
+                break;
+            
+            case 'C':   //cap
+                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[0]->name)] += 1.0/(itr->value);
+                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[1]->name)] += 1.0/(itr->value);
+                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[1]->name)] -= 1.0/(itr->value);
+                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[0]->name)] -= 1.0/(itr->value);
+                break;
+
+            case 'L':   //Inductor
+                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[0]->name)] += (itr->value);
+                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[1]->name)] += (itr->value);
+                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[1]->name)] -= (itr->value);
+                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[0]->name)] -= (itr->value);
+                break;
+
+        };
+
+        itr = itr->next;
+    }
+
 	// for (int i = 0; i < nRes; ++i)
 	// {
 	// 	MNAMatrix[nodelist[0]][nodelist[0]] += 1/value;
@@ -163,14 +211,15 @@ void Print_MNA_System()
 
 	printf("\n\n");
 	for (j = 0; j <= MatrixSize; j++) {
-		printf("\t%-12d", j);
+		printf("\t%-22d", j);
 	}
 	printf("\tRHS");
 	
 	for (i = 0; i <= MatrixSize; i++) {
 		printf("\n[%-3d]", i);
 		for (j = 0; j <= MatrixSize; j++) {
-			printf("\t%-12f", MNAMatrix[i][j]);
+			printf("\t%f", MNAMatrix[i][j]);
+            printf("+%fs", MNAAuxMatrix[i][j]);
 		}
 		printf("\t%-12f", RHS[i]);
 	}

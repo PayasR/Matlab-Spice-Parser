@@ -287,8 +287,8 @@ void Print_Node_Table()
 	Node_Entry *itr = *NodeTable;
     while(itr != NULL)
     {
-        printf("node name = %s\n", itr->name);
-        printf("node index = %d\n", itr->index);   
+        printf("node name = %s", itr->name);
+        printf("\tindex = %d\n", itr->index);   
 
         itr = itr->next;
     }
