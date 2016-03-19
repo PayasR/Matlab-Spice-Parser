@@ -165,44 +165,6 @@ void Create_MNA_Matrix()
         itr = itr->next;
     }
 
-	// for (int i = 0; i < nRes; ++i)
-	// {
-	// 	MNAMatrix[nodelist[0]][nodelist[0]] += 1/value;
-	// 	MNAMatrix[nodelist[1]][nodelist[1]] += 1/value;
-	// 	MNAMatrix[nodelist[0]][nodelist[1]] += -1/value;
-	// 	MNAMatrix[nodelist[1]][nodelist[0]] += -1/value;
-	// }
-
-	// for (int i = 0; i < nCap; ++i)
-	// {
-	// 	MNAMatrix[nodelist[0]][nodelist[0]] += value;
-	// 	MNAMatrix[nodelist[1]][nodelist[1]] += value;
-	// 	MNAMatrix[nodelist[0]][nodelist[1]] += -value;
-	// 	MNAMatrix[nodelist[1]][nodelist[0]] += -value;
-	// }
-
-	// for (int i = 0; i < nInd; ++i)
-	// {
-	// 	MNAMatrix[nodelist[0]][nodelist[0]] += value;
-	// 	MNAMatrix[nodelist[1]][nodelist[1]] += value;
-	// 	MNAMatrix[nodelist[0]][nodelist[1]] += -value;
-	// 	MNAMatrix[nodelist[1]][nodelist[0]] += -value;
-	// }
-
-	// for (int i = 0; i < nVCCS; ++i)
-	// {
-	// 	/* code */
-	// }
-
-	// for (int i = 0; i < nVsrc; ++i)
-	// {
-	// 	/* code */
-	// }
-
-	// for (int i = 0; i < nIsrc; ++i)
-	// {
-	// 	/* code */
-	// }
 }
 
 void Print_MNA_System()
