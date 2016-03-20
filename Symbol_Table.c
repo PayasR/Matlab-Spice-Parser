@@ -64,7 +64,8 @@ void Destroy_Symbol_Table()
 
 void Delete_Node_Table()
 {
-    for (int i = 0; i < DeviceTableSize; ++i)
+	int i;
+    for (i = 0; i < DeviceTableSize; ++i)
     {
         Delete_Node_Entry(DeviceTable[i]->name);
         //free(DeviceTable[j]);
@@ -75,7 +76,8 @@ void Delete_Node_Table()
 
 void Delete_Device_Table()
 {
-	for (int i = 0; i < DeviceTableSize; ++i)
+	int i; 
+	for (i = 0; i < DeviceTableSize; ++i)
 	{
 		Delete_Device_Entry(DeviceTable[i]->name);
         //free(DeviceTable[j]);
@@ -109,8 +111,10 @@ void Delete_Node_Entry(const char *name)
 
 void Delete_Device_Entry(const char *name)
 {
+	int i;
     Device_Entry *itr = *DeviceTable;
-    while(itr->next->next != NULL)
+    
+	while(itr->next->next != NULL)
     {
         // if found, delete the contents
         if (!strcmp(itr->next->name, name))   
@@ -118,8 +122,8 @@ void Delete_Device_Entry(const char *name)
             Device_Entry *temp = itr->next;
 
             free(temp->name);
-
-            for (int i = 0; i < temp->numnodes; ++i)
+			
+            for (i = 0; i < temp->numnodes; ++i)
                 free(temp->nodelist[i]);
             
             // Assuming that *device is unused. 
