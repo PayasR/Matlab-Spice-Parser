@@ -128,39 +128,45 @@ void Create_MNA_Matrix()
         switch(itr->name[0])
         {
             case 'R':   //resistor
-                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[0]->name)] += 1.0/(itr->value);
-                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[1]->name)] += 1.0/(itr->value);
-                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[1]->name)] -= 1.0/(itr->value);
-                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[0]->name)] -= 1.0/(itr->value);
+                // printf("Resistor found, adding %f\n", 1.0/(itr->value));
+                MNAMatrix[itr->nodelist[0]->index][itr->nodelist[0]->index] += 1.0/(itr->value);
+                MNAMatrix[itr->nodelist[1]->index][itr->nodelist[1]->index] += 1.0/(itr->value);
+                MNAMatrix[itr->nodelist[0]->index][itr->nodelist[1]->index] -= 1.0/(itr->value);
+                MNAMatrix[itr->nodelist[1]->index][itr->nodelist[0]->index] -= 1.0/(itr->value);
                 break;
             
             case 'G':   //vccs
-                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[2]->name)] += (itr->value);
-                MNAMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[3]->name)] -= (itr->value);
-                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[2]->name)] -= (itr->value);
-                MNAMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[3]->name)] += (itr->value);
+                MNAMatrix[itr->nodelist[0]->index][itr->nodelist[2]->index] += (itr->value);
+                MNAMatrix[itr->nodelist[0]->index][itr->nodelist[3]->index] -= (itr->value);
+                MNAMatrix[itr->nodelist[1]->index][itr->nodelist[2]->index] -= (itr->value);
+                MNAMatrix[itr->nodelist[1]->index][itr->nodelist[3]->index] += (itr->value);
                 break;
             
             case 'I':   //isrc
-                RHS[atoi(itr->nodelist[0]->name)] -= itr->value;
-                RHS[atoi(itr->nodelist[1]->name)] += itr->value;
+                RHS[itr->nodelist[0]->index] -= itr->value;
+                RHS[itr->nodelist[1]->index] += itr->value;
                 break;
             
             case 'C':   //cap
-                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[0]->name)] += 1.0/(itr->value);
-                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[1]->name)] += 1.0/(itr->value);
-                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[1]->name)] -= 1.0/(itr->value);
-                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[0]->name)] -= 1.0/(itr->value);
+                MNAAuxMatrix[itr->nodelist[0]->index][itr->nodelist[0]->index] += 1.0/(itr->value);
+                MNAAuxMatrix[itr->nodelist[1]->index][itr->nodelist[1]->index] += 1.0/(itr->value);
+                MNAAuxMatrix[itr->nodelist[0]->index][itr->nodelist[1]->index] -= 1.0/(itr->value);
+                MNAAuxMatrix[itr->nodelist[1]->index][itr->nodelist[0]->index] -= 1.0/(itr->value);
                 break;
 
             case 'L':   //Inductor
-                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[0]->name)] += (itr->value);
-                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[1]->name)] += (itr->value);
-                MNAAuxMatrix[atoi(itr->nodelist[0]->name)][atoi(itr->nodelist[1]->name)] -= (itr->value);
-                MNAAuxMatrix[atoi(itr->nodelist[1]->name)][atoi(itr->nodelist[0]->name)] -= (itr->value);
+                MNAAuxMatrix[itr->nodelist[0]->index][itr->nodelist[0]->index] += (itr->value);
+                MNAAuxMatrix[itr->nodelist[1]->index][itr->nodelist[1]->index] += (itr->value);
+                MNAAuxMatrix[itr->nodelist[0]->index][itr->nodelist[1]->index] -= (itr->value);
+                MNAAuxMatrix[itr->nodelist[1]->index][itr->nodelist[0]->index] -= (itr->value);
                 break;
 
         };
+
+        //Print_MNA_System();
+
+        // int t;
+        // scanf("%d", &t);
 
         itr = itr->next;
     }

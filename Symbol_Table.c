@@ -227,12 +227,23 @@ Node_Entry* Insert_Node_Entry(const char *name)
     temp->index = 0;
     temp->node = NULL;      // Unused    
     
-    // Add it to the list
-    temp->next = *NodeTable;
-    *NodeTable = temp;
+    // Add it to the end of the list
+    // temp->next = *NodeTable;
+    // *NodeTable = temp;
+    Node_Entry *itr = *NodeTable;
+    
+    if(itr == NULL)
+        *NodeTable = temp;
+    else
+    {
+        while(itr->next != NULL)
+            itr = itr->next;
+        itr->next = temp;
+    }
+
     NodeTableSize++;
 
-	return *NodeTable;
+	return temp;
 }
 
 
@@ -249,11 +260,20 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
     temp->device = NULL;    // Unused 
 
     // Add it to the table
-    temp->next = *DeviceTable;
-    *DeviceTable = temp;
+    Device_Entry *itr = *DeviceTable;
+    
+    if(itr == NULL)
+        *DeviceTable = temp;
+    else
+    {
+        while(itr->next != NULL)
+            itr = itr->next;
+        itr->next = temp;
+    }
+
     DeviceTableSize++;
 
-	return *DeviceTable;
+	return temp;
 }
 
 
